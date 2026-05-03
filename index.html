@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PathFinder — Discover Your True Learning Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<!-- ============================================================
+  EMAIL SETUP — EmailJS (free, no server needed)
+  HOW TO SET UP IN 5 MINUTES:
+  1. Go to https://www.emailjs.com and create a FREE account
+  2. Add an Email Service (Gmail, Outlook, etc.) → copy the Service ID
+  3. Create two Email Templates (one for bookings, one for assessments)
+     → copy each Template ID
+  4. Go to Account → API Keys → copy your Public Key
+  5. Replace the 4 placeholder values below with your real IDs
+
+  YOUR EMAIL CREDENTIALS — replace these 4 values:
+============================================================ -->
+<script>
+  // ============================================================
+  //  PATHFINDER — EMAIL CONFIGURATION (FULLY CONFIGURED ✅)
+  // ============================================================
+  window.EMAILJS_CONFIG = {
+    publicKey:         "c2o6wFn8GxZfTVqzd",    // ✅ Public Key
+    serviceId:         "service_uws34sm",        // ✅ Service ID
+    bookingTemplateId: "template_k10if29",       // ✅ Template ID
+    assessTemplateId:  "template_k10if29",       // ✅ Same template
+    adminEmail:        "ajibadei75@gmail.com"    // ✅ Admin email
+  };
+</script>
+<!-- EmailJS SDK — auto-initialized below -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // Initialize EmailJS immediately when SDK loads
+  (function initEJS(){
+    if(window.emailjs && window.EMAILJS_CONFIG){
+      emailjs.init({ publicKey: window.EMAILJS_CONFIG.publicKey });
+      console.log('%c✅ PathFinder EmailJS Ready', 'color:#06d6a0;font-weight:bold;font-size:13px');
+    }
+  })();
+</script>
+</head>
+<body>
+<div class="bg-orbs">
+  <div class="orb orb1"></div><div class="orb orb2"></div>
+  <div class="orb orb3"></div><div class="orb orb4"></div>
+</div>
+<nav class="nav" id="nav">
+  <div class="nav-in">
+    <div class="logo"><span class="logo-hex">⬡</span>PathFinder<span class="logo-dot">.</span></div>
+    <div class="nav-links">
+      <a class="nl" href="#hero">Home</a>
+      <a class="nl" href="#how">How It Works</a>
+      <a class="nl" href="#assess">Assessment</a>
+      <a class="nl" href="#counsel">Counselling</a>
+      <a class="nl" href="#chat">AI Chat</a>
+    </div>
+    <button class="nav-cta" onclick="goAssess()">Start Now →</button>
+    <button class="burger" id="burger">☰</button>
+  </div>
+</nav>
+<div class="overlay-bg" id="ovBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <a href="#hero" onclick="closeDrawer()">Home</a>
+  <a href="#how" onclick="closeDrawer()">How It Works</a>
+  <a href="#assess" onclick="closeDrawer()">Assessment</a>
+  <a href="#counsel" onclick="closeDrawer()">Counselling</a>
+  <a href="#chat" onclick="closeDrawer()">AI Chat</a>
+</div>
+<section id="hero">
+  <div class="hero wrap">
+    <div class="hero-content">
+      <div class="hero-badge anim-up"><span class="badge-dot"></span>AI-Powered Career Guidance Platform</div>
+      <h1 class="hero-title anim-up d1">Stop Guessing.<br><span class="grad-text">Find Your Path.</span></h1>
+      <p class="hero-sub anim-up d2">Confused about what course or skill to learn? Our AI analyses your interests, academic background, and personality to recommend your perfect learning path — accurately and personally.</p>
+      <div class="hero-btns anim-up d3">
+        <button class="btn btn-primary" onclick="goAssess()"><span>Take the Assessment</span><span class="arr">→</span></button>
+        <button class="btn btn-outline" onclick="goHow()">See How It Works</button>
+      </div>
+      <div class="hero-stats anim-up d4">
+        <div><div class="stat-n">50K+</div><div class="stat-l">Students Guided</div></div>
+        <div class="sdiv"></div>
+        <div><div class="stat-n">99%</div><div class="stat-l">Accuracy Rate</div></div>
+        <div class="sdiv"></div>
+        <div><div class="stat-n">200+</div><div class="stat-l">Skills Mapped</div></div>
+      </div>
+    </div>
+    <div class="hero-vis">
+      <div class="fc fc-t">💻 Software Dev</div>
+      <div class="fc fc-tl">🎨 UI/UX Design</div>
+      <div class="fc fc-tr">📊 Data Science</div>
+      <div class="fc fc-bl">🤖 AI &amp; ML</div>
+      <div class="fc fc-br">📱 Mobile Dev</div>
+      <div class="fc fc-b">🔐 Cybersecurity</div>
+      <div class="orbit orbit1"></div>
+      <div class="orbit orbit2"></div>
+      <div class="vis-center">🧭</div>
+    </div>
+  </div>
+</section>
+<section id="how" class="hiw sec">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-tag">The Process</span>
+      <h2 class="sec-title">How PathFinder Works</h2>
+      <p class="sec-sub">Three smart steps to your perfect learning path</p>
+    </div>
+    <div class="steps">
+      <div class="step sr" data-n="01">
+        <div class="step-ic sic1">🎯</div>
+        <h3>Choose Your Track</h3>
+        <p>Pick Academic (based on your school course) or Personal Interest — whichever fits your situation best.</p>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step sr" data-n="02">
+        <div class="step-ic sic2">🧠</div>
+        <h3>Answer Smart Questions</h3>
+        <p>10 carefully crafted questions our AI analyses to deeply understand your unique strengths and goals.</p>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step sr" data-n="03">
+        <div class="step-ic sic3">✨</div>
+        <h3>Get Your Results</h3>
+        <p>Receive 3 personalised skill recommendations with match scores, market insights, and full roadmaps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="assess" class="assess sec">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-tag">AI Assessment</span>
+      <h2 class="sec-title">Discover Your Path</h2>
+      <p class="sec-sub">Answer 10 questions and let our AI find your best learning direction</p>
+    </div>
+    <div id="trackSel">
+      <div class="track-sel">
+        <div class="tcard" id="tcAc" onclick="pickTrack('academic')">
+          <div class="tcard-glow"></div>
+          <span class="tcard-ic">🎓</span>
+          <h3>Academic Track</h3>
+          <p>Based on the course you're studying in school. We'll map complementary skills that multiply your degree's value and employability.</p>
+          <div class="tcard-tags"><span>Science</span><span>Arts</span><span>Commerce</span><span>Engineering</span><span>Law</span></div>
+          <div class="tcard-cta tcard-cta-a">Select Track →</div>
+        </div>
+        <div class="tdiv"><span>OR</span></div>
+        <div class="tcard" id="tcPe" onclick="pickTrack('personal')">
+          <div class="tcard-glow tcard-glow-g"></div>
+          <span class="tcard-ic">💡</span>
+          <h3>Personal Interest Track</h3>
+          <p>Based purely on what you love, how you think, and what excites you — completely independent of your school course.</p>
+          <div class="tcard-tags"><span>Creative</span><span>Analytical</span><span>Social</span><span>Technical</span><span>Entrepreneurial</span></div>
+          <div class="tcard-cta tcard-cta-g">Select Track →</div>
+        </div>
+      </div>
+    </div>
+    <div id="quizArea" style="display:none">
+      <div class="quiz-area">
+        <div class="quiz-head">
+          <button class="back-btn" onclick="quizBack()">← Back</button>
+          <div class="prog-wrap">
+            <span class="prog-lbl" id="progLbl">Question 1 of 10</span>
+            <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+          </div>
+          <div class="track-pill" id="trackPill"></div>
+        </div>
+        <div class="q-card" id="qCard">
+          <div class="q-num" id="qNum">01</div>
+          <h2 class="q-text" id="qText"></h2>
+          <div class="opts" id="optsGrid"></div>
+          <div class="quiz-foot">
+            <span class="quiz-hint">Select one option to continue</span>
+            <button class="btn-next" id="nxtBtn" onclick="quizNext()" disabled>Continue →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="resultsArea" style="display:none">
+      <div class="res-head">
+        <div class="res-anim">
+          <div class="rr rr1"></div><div class="rr rr2"></div><div class="rr rr3"></div>
+          <span class="res-center">✨</span>
+        </div>
+        <h2>Your AI-Powered Results</h2>
+        <p id="resSubtitle">Based on your responses, here are your 3 personalised recommendations</p>
+      </div>
+      <div class="res-grid" id="resGrid"></div>
+      <div class="res-actions">
+        <button class="btn btn-primary" onclick="goCounsel()">Book a Counselling Session</button>
+        <button class="btn btn-outline" onclick="resetQuiz()">Retake Assessment</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="counsel" class="counsel sec">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-tag">Human Support</span>
+      <h2 class="sec-title">Personal Counselling</h2>
+      <p class="sec-sub">Talk 1-on-1 with a certified career expert who has your full AI assessment report</p>
+    </div>
+    <div class="counsel-grid">
+      <!-- EMAIL SYSTEM — FULLY LIVE ✅ -->
+      <div class="email-live-banner" id="setupGuide">
+        <div class="elb-inner">
+          <div class="elb-left">
+            <div class="elb-pulse"></div>
+            <div>
+              <strong>📧 Email System — Fully Live</strong>
+              <p>All booking confirmations and AI session briefs are automatically delivered to <code>ajibadei75@gmail.com</code></p>
+            </div>
+          </div>
+          <div class="elb-badges">
+            <span class="elb-badge">✓ service_uws34sm</span>
+            <span class="elb-badge">✓ template_k10if29</span>
+            <span class="elb-badge">✓ ajibadei75@gmail.com</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="counsel-info">
+        <div class="cf sr"><div class="cf-ic">🗓️</div><div><h4>Schedule a Session</h4><p>Book a video call with a certified career counsellor at a time that works for you. First session is completely free.</p></div></div>
+        <div class="cf sr"><div class="cf-ic">📋</div><div><h4>Personalised Review</h4><p>Your counsellor receives your full AI assessment report before the session — no need to repeat yourself.</p></div></div>
+        <div class="cf sr"><div class="cf-ic">🗺️</div><div><h4>Custom Learning Roadmap</h4><p>Walk away with a detailed 6-month action plan with resources, milestones, and a realistic timeline built just for you.</p></div></div>
+        <div class="cf sr"><div class="cf-ic">🔄</div><div><h4>Monthly Follow-ups</h4><p>Monthly check-ins to track your progress, celebrate wins, and adjust your path when needed.</p></div></div>
+      </div>
+      <div>
+        <div class="book-form">
+          <h3>Book Your Session</h3>
+          <div class="fg"><label>Full Name *</label><input type="text" id="cName" placeholder="e.g. Amara Johnson"></div>
+          <div class="fg"><label>Email Address *</label><input type="email" id="cEmail" placeholder="you@email.com"></div>
+          <div class="fg"><label>Preferred Date *</label><input type="date" id="cDate"></div>
+          <div class="fg">
+            <label>Session Type *</label>
+            <select id="cType">
+              <option value="">Select session type...</option>
+              <option>Academic Course Guidance</option>
+              <option>Career Skills Planning</option>
+              <option>Full Life &amp; Career Coaching</option>
+              <option>Quick 30-min Consultation</option>
+            </select>
+          </div>
+          <div class="fg"><label>What are you struggling to decide? (optional)</label><textarea id="cNote" placeholder="Brief description of your confusion or situation..."></textarea></div>
+          <button class="btn btn-primary btn-full" id="bookBtn" onclick="doBook()">Book My Session →</button>
+          <p class="form-note">✓ Free first session &nbsp;·&nbsp; ✓ Certified counsellors &nbsp;·&nbsp; ✓ Fully confidential</p>
+          <div class="success-msg" id="bookSuccess">
+            <span class="si">🎉</span>
+            <h4>Session Booked Successfully!</h4>
+            <p id="bookSuccessMsg">Your counselling session has been confirmed. Check your email for details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="chat" class="chat-sec sec">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-tag">AI Advisor</span>
+      <h2 class="sec-title">One-to-One AI Conversation</h2>
+      <p class="sec-sub">Ask anything about your learning path — available 24/7, completely free</p>
+    </div>
+    <div class="chat-wrap">
+      <div class="chat-side">
+        <div class="chat-profile">
+          <div class="ai-av"><span>🤖</span><div class="ai-dot"></div></div>
+          <div class="ai-nm"><strong>PathAI Advisor</strong><span>● Always online</span></div>
+        </div>
+        <div class="chat-topics">
+          <span class="topics-lbl">Quick Topics</span>
+          <button class="t-chip" onclick="chipAsk('What skills should I learn as a Computer Science student?')">CS Student Skills</button>
+          <button class="t-chip" onclick="chipAsk('I love design and creativity — what career path should I pursue?')">Creative Careers</button>
+          <button class="t-chip" onclick="chipAsk('What are the highest-paying tech skills to learn in 2025?')">High-Paying Skills</button>
+          <button class="t-chip" onclick="chipAsk('How do I transition from an arts background into tech?')">Arts to Tech</button>
+          <button class="t-chip" onclick="chipAsk('I am confused between studying Medicine and Engineering — help me decide.')">Medicine vs Engineering</button>
+          <button class="t-chip" onclick="chipAsk('What are the best free resources to learn Data Science from scratch?')">Free Resources</button>
+          <button class="t-chip" onclick="chipAsk('Is it too late to start learning programming at age 25?')">Starting Late?</button>
+          <button class="t-chip" onclick="chipAsk('What skills can I learn in 3 months that will get me a job?')">Skills in 3 Months</button>
+        </div>
+      </div>
+      <div class="chat-main">
+        <div class="chat-msgs" id="chatMsgs">
+          <div class="msg">
+            <div class="msg-av">🤖</div>
+            <div class="bubble">
+              <p>Hello! I'm PathAI, your personal career and learning advisor. 👋</p>
+              <p>I'm here to help you figure out exactly what to study, which skills to learn, and how to build the career you want. Ask me anything — no question is too big or small!</p>
+              <span class="msg-time">Now</span>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="typing" id="typing">
+            <div class="td"></div><div class="td"></div><div class="td"></div>
+            <span class="typing-lbl">PathAI is typing...</span>
+          </div>
+          <div class="chat-row">
+            <input class="chat-in" id="chatIn" type="text" placeholder="Ask me anything about your learning path..." onkeydown="if(event.key==='Enter'){event.preventDefault();doChat()}">
+            <button class="send-btn" onclick="doChat()">↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="testi sec-sm">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="sec-tag">Success Stories</span>
+      <h2 class="sec-title">Students Who Found Their Path</h2>
+    </div>
+    <div class="t-track" id="tTrack">
+      <div class="t-card"><div class="t-q">❝</div><p>"I was completely lost between Law and Computer Science. PathFinder's assessment revealed I could combine both through LegalTech. That single insight changed my life!"</p><div class="t-auth"><div class="t-av" style="background:#ff6b6b">AO</div><div><strong>Adaeze Okonkwo</strong><span>Unilag, Year 3</span></div></div><div class="t-stars">★★★★★</div></div>
+      <div class="t-card"><div class="t-q">❝</div><p>"The AI chat made me realise my love for numbers could lead to Data Science. I started learning Python and now have two freelance clients!"</p><div class="t-auth"><div class="t-av" style="background:#ffd166">KM</div><div><strong>Kolade Musa</strong><span>OAU, Accounting</span></div></div><div class="t-stars">★★★★★</div></div>
+      <div class="t-card"><div class="t-q">❝</div><p>"The counselling session was transformational. My counsellor built me a 6-month roadmap. I'm now a certified UI/UX designer at a startup!"</p><div class="t-auth"><div class="t-av" style="background:#06d6a0">FI</div><div><strong>Fatimah Ibrahim</strong><span>ABU Zaria, Mass Comm</span></div></div><div class="t-stars">★★★★★</div></div>
+      <div class="t-card"><div class="t-q">❝</div><p>"PathFinder showed me Technical Writing and Content Strategy — skills I now get paid for daily. My storytelling passion became a real tech career."</p><div class="t-auth"><div class="t-av" style="background:#4fc3f7">EC</div><div><strong>Emeka Chukwu</strong><span>UNIPORT, English Grad</span></div></div><div class="t-stars">★★★★★</div></div>
+      <div class="t-card"><div class="t-q">❝</div><p>"As a Medical student, I didn't know tech was relevant for me. PathFinder showed me Health Informatics and now I'm building a health app alongside MBBS!"</p><div class="t-auth"><div class="t-av" style="background:#c77dff">TA</div><div><strong>Tunde Afolabi</strong><span>UCH, Medicine Year 4</span></div></div><div class="t-stars">★★★★★</div></div>
+    </div>
+    <div class="t-dots" id="tDots"></div>
+  </div>
+</section>
+<footer>
+  <div class="foot-in">
+    <div class="foot-brand">
+      <div class="logo"><span class="logo-hex">⬡</span>PathFinder<span class="logo-dot">.</span></div>
+      <p>Empowering students everywhere to discover their true learning path through AI-powered, human-backed guidance.</p>
+    </div>
+    <div class="foot-col"><h4>Platform</h4><a href="#assess">Assessment</a><a href="#counsel">Counselling</a><a href="#chat">AI Chat</a><a href="#how">How It Works</a></div>
+    <div class="foot-col"><h4>Support</h4><a href="#">FAQ</a><a href="#">Contact Us</a><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></div>
+  </div>
+  <div class="foot-bot">
+    <span>© 2025 PathFinder. Built with ❤️ for students everywhere.</span>
+    <span>Powered by AI · Trusted by 50,000+ students</span>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<div class="loader" id="loader">
+  <div class="ld-box">
+    <div class="ld-rings"><div class="lr lr1"></div><div class="lr lr2"></div><div class="lr lr3"></div></div>
+    <p class="ld-txt">Analysing your responses with AI...</p>
+    <div class="ld-steps" id="ldSteps"></div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
