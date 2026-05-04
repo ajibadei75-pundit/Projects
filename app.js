@@ -659,6 +659,27 @@ function renderResults(aiData, ranked){
 
   $('resultsArea').scrollIntoView({behavior:'smooth', block:'start'});
 
+  // Push assessment result to admin dashboard storage
+  try{
+    const adminAssess = JSON.parse(localStorage.getItem('pf_admin_assessments')||'[]');
+    adminAssess.unshift({
+      track: track === 'academic' ? 'Academic' : 'Personal',
+      skills: recs.slice(0,3).map((r,i) => {
+        const sk = SKILLS[r.skillKey];
+        return `${sk ? sk.name : r.skillKey} (${r.matchScore}% match)`;
+      }),
+      answers: Object.entries(ans).map(([qid,a]) => {
+        const q = qs.find(q => q.id === qid);
+        return `Q: ${q ? q.text : qid}\nA: ${a.l}`;
+      }).join('\n\n'),
+      date: new Date().toLocaleString('en-GB',{
+        weekday:'short', day:'numeric', month:'short',
+        year:'numeric', hour:'2-digit', minute:'2-digit'
+      })
+    });
+    localStorage.setItem('pf_admin_assessments', JSON.stringify(adminAssess));
+  }catch(e){}
+
   // Email admin with assessment results
   sendAssessmentEmail(recs);
 }
@@ -864,6 +885,22 @@ Your job: Generate THREE separate texts. Return ONLY valid JSON — no markdown,
   // ── Step 4: Update UI ──
   btn.textContent   = '✅ Session Booked!';
   btn.style.background = 'linear-gradient(135deg,#06d6a0,#4fc3f7)';
+
+  // Push to admin dashboard storage
+  try{
+    const adminBookings = JSON.parse(localStorage.getItem('pf_admin_bookings')||'[]');
+    adminBookings.unshift({
+      id: bookingRef, ref: bookingRef,
+      name: name, email: email,
+      type: type, date: date,
+      note: note||'', status:'pending',
+      bookedAt: bookedAt,
+      adminBrief: adminBrief,
+      outreachEmail: outreachBody,
+      aiConfirmation: studentMsg
+    });
+    localStorage.setItem('pf_admin_bookings', JSON.stringify(adminBookings));
+  }catch(e){}
 
   // Show rich success box
   $('bookSuccessMsg').innerHTML = `

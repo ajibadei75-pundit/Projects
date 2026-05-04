@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PathFinder — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- ✅ FULLY CONFIGURED — NO CHANGES NEEDED -->
+<script>
+window.EMAILJS_CONFIG = {
+  publicKey:         "c2o6wFn8GxZfTVqzd",
+  serviceId:         "service_uws34sm",
+  bookingTemplateId: "template_k10if29",
+  assessTemplateId:  "template_k10if29",
+  adminEmail:        "ajibadei75@gmail.com"
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+(function(){ if(window.emailjs && window.EMAILJS_CONFIG) emailjs.init({publicKey:window.EMAILJS_CONFIG.publicKey}); })();
+</script>
+
+<style>
+/* =====================================================
+   PATHFINDER ADMIN — FULL STYLESHEET
+   ===================================================== */
+:root{
+  --bg:#07071a;--bg2:#0c0c22;--surf:#12122a;--surf2:#1a1a35;--surf3:#222245;
+  --b1:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);
+  --txt:#eeeeff;--mut:#7878a8;
+  --p:#6c63ff;--p2:#9b96ff;
+  --g1:#ff6b6b;--g2:#ffd166;--g3:#06d6a0;--g4:#4fc3f7;--g5:#c77dff;
+  --grad:linear-gradient(135deg,#6c63ff,#c77dff,#ff6b6b);
+  --grad2:linear-gradient(135deg,#06d6a0,#4fc3f7);
+  --r:16px;--r2:10px;
+  --fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'Space Mono',monospace;
+  --sidebar:260px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--txt);overflow-x:hidden;display:flex;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--fb);cursor:pointer;border:none}
+input,select,textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:10px}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);
+  background:var(--bg2);
+  border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;
+  z-index:100;overflow-y:auto;
+}
+.sb-logo{
+  display:flex;align-items:center;gap:.5rem;
+  padding:1.5rem 1.4rem 1.2rem;
+  border-bottom:1px solid var(--b1);
+}
+.sb-logo-hex{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.4rem}
+.sb-logo-txt{font-family:var(--fh);font-weight:800;font-size:1.1rem}
+.sb-logo-dot{color:var(--g1);-webkit-text-fill-color:var(--g1)}
+.sb-admin-badge{
+  margin:1rem 1.4rem .3rem;
+  background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);
+  color:var(--p2);padding:.22rem .7rem;border-radius:100px;
+  font-size:.65rem;font-family:var(--fm);letter-spacing:.08em;text-transform:uppercase;
+  display:inline-block;
+}
+.sb-section-label{
+  font-size:.65rem;font-family:var(--fm);text-transform:uppercase;letter-spacing:.1em;
+  color:var(--mut);padding:.6rem 1.4rem .35rem;margin-top:.4rem;
+}
+.sb-nav{display:flex;flex-direction:column;gap:.2rem;padding:0 .8rem}
+.sb-item{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.72rem .9rem;border-radius:11px;
+  color:var(--mut);font-size:.88rem;font-weight:500;
+  cursor:pointer;transition:all .2s;position:relative;
+}
+.sb-item:hover{background:var(--surf);color:var(--txt)}
+.sb-item.active{background:rgba(108,99,255,.18);color:var(--p2);border:1px solid rgba(108,99,255,.25)}
+.sb-item .sb-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.sb-item .sb-badge{
+  margin-left:auto;background:var(--g1);color:#fff;
+  width:18px;height:18px;border-radius:50%;
+  font-size:.6rem;font-family:var(--fm);font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.sb-item .sb-badge.green{background:var(--g3)}
+.sb-item .sb-badge.yellow{background:var(--g2);color:#07071a}
+.sb-divider{height:1px;background:var(--b1);margin:.6rem .8rem}
+.sb-bottom{padding:1rem;border-top:1px solid var(--b1);margin-top:auto}
+.sb-admin-info{display:flex;align-items:center;gap:.7rem}
+.sb-avatar{
+  width:36px;height:36px;background:var(--grad);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;flex-shrink:0;
+}
+.sb-admin-info strong{display:block;font-size:.82rem;font-family:var(--fh)}
+.sb-admin-info span{font-size:.72rem;color:var(--g3)}
+.sb-item.danger{color:var(--g1)}
+.sb-item.danger:hover{background:rgba(255,107,107,.1)}
+
+/* ── MAIN CONTENT ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(7,7,26,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--b1);
+  padding:0 2rem;height:62px;
+  display:flex;align-items:center;gap:1.5rem;
+}
+.topbar-title{font-family:var(--fh);font-weight:800;font-size:1.05rem}
+.topbar-sub{font-size:.78rem;color:var(--mut);margin-left:.3rem}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:.8rem}
+.tb-search{
+  background:var(--surf);border:1px solid var(--b2);
+  border-radius:10px;padding:.48rem 1rem .48rem .85rem;
+  color:var(--txt);font-size:.85rem;outline:none;width:220px;
+  transition:border .2s;
+}
+.tb-search:focus{border-color:var(--p)}
+.tb-btn{
+  background:var(--surf);border:1px solid var(--b2);
+  color:var(--txt);padding:.45rem .9rem;border-radius:9px;
+  font-size:.82rem;transition:all .2s;display:flex;align-items:center;gap:.4rem;
+}
+.tb-btn:hover{border-color:var(--p);color:var(--p2)}
+.tb-btn-primary{
+  background:var(--grad);color:#fff;border:none;
+  padding:.48rem 1.1rem;border-radius:9px;font-weight:700;
+  font-family:var(--fh);font-size:.82rem;transition:all .3s;
+}
+.tb-btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(108,99,255,.4)}
+.content{padding:2rem;flex:1}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+.stat-card{
+  background:var(--surf);border:1px solid var(--b1);
+  border-radius:var(--r);padding:1.4rem 1.5rem;
+  position:relative;overflow:hidden;transition:all .3s;
+}
+.stat-card:hover{transform:translateY(-3px);border-color:var(--b2)}
+.stat-card::after{
+  content:'';position:absolute;top:0;right:0;
+  width:80px;height:80px;border-radius:50%;
+  filter:blur(30px);opacity:.4;
+}
+.sc1::after{background:var(--p)}
+.sc2::after{background:var(--g3)}
+.sc3::after{background:var(--g2)}
+.sc4::after{background:var(--g1)}
+.stat-label{font-size:.75rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;font-family:var(--fm)}
+.stat-val{font-family:var(--fh);font-size:2rem;font-weight:800;margin-bottom:.2rem}
+.stat-sub{font-size:.75rem;color:var(--mut)}
+.stat-trend{font-size:.72rem;display:flex;align-items:center;gap:.3rem;margin-top:.4rem}
+.trend-up{color:var(--g3)}
+.trend-down{color:var(--g1)}
+
+/* ── SECTION HEADER ── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem}
+.sec-hd h2{font-family:var(--fh);font-size:1.05rem;font-weight:700}
+.sec-hd-right{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--surf);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden}
+.table-filter-bar{
+  display:flex;align-items:center;gap:.75rem;padding:1rem 1.2rem;
+  border-bottom:1px solid var(--b1);flex-wrap:wrap;
+}
+.filter-btn{
+  background:var(--surf2);border:1px solid var(--b1);
+  color:var(--mut);padding:.32rem .8rem;border-radius:8px;
+  font-size:.78rem;transition:all .2s;
+}
+.filter-btn:hover,.filter-btn.on{background:rgba(108,99,255,.15);border-color:rgba(108,99,255,.35);color:var(--p2)}
+.filter-search{
+  background:var(--surf2);border:1px solid var(--b1);
+  border-radius:8px;padding:.32rem .85rem;
+  color:var(--txt);font-size:.8rem;outline:none;width:200px;margin-left:auto;
+  transition:border .2s;
+}
+.filter-search:focus{border-color:var(--p)}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--b1)}
+th{
+  text-align:left;padding:.85rem 1.2rem;
+  font-size:.72rem;font-family:var(--fm);text-transform:uppercase;
+  letter-spacing:.07em;color:var(--mut);font-weight:400;white-space:nowrap;
+}
+td{
+  padding:.9rem 1.2rem;font-size:.85rem;
+  border-bottom:1px solid var(--b1);vertical-align:middle;
+}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+.status-badge{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.22rem .7rem;border-radius:100px;font-size:.72rem;font-family:var(--fm);
+}
+.sb-pending {background:rgba(255,209,102,.15);color:var(--g2);border:1px solid rgba(255,209,102,.3)}
+.sb-approved{background:rgba(6,214,160,.15);color:var(--g3);border:1px solid rgba(6,214,160,.3)}
+.sb-rejected{background:rgba(255,107,107,.15);color:var(--g1);border:1px solid rgba(255,107,107,.3)}
+.sb-completed{background:rgba(108,99,255,.15);color:var(--p2);border:1px solid rgba(108,99,255,.3)}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.action-btn{
+  background:var(--surf2);border:1px solid var(--b1);
+  color:var(--mut);padding:.28rem .65rem;border-radius:7px;
+  font-size:.75rem;transition:all .2s;margin-right:.3rem;
+}
+.action-btn:hover{border-color:var(--p);color:var(--p2)}
+.action-btn.approve{background:rgba(6,214,160,.1);border-color:rgba(6,214,160,.3);color:var(--g3)}
+.action-btn.approve:hover{background:rgba(6,214,160,.2)}
+.action-btn.reject{background:rgba(255,107,107,.1);border-color:rgba(255,107,107,.3);color:var(--g1)}
+.action-btn.reject:hover{background:rgba(255,107,107,.2)}
+.action-btn.view{background:rgba(108,99,255,.1);border-color:rgba(108,99,255,.3);color:var(--p2)}
+.student-name{font-weight:600;font-family:var(--fh);font-size:.88rem}
+.student-email{font-size:.75rem;color:var(--mut);font-family:var(--fm)}
+.session-type{font-size:.8rem}
+.booking-ref{font-family:var(--fm);font-size:.72rem;color:var(--mut)}
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--mut)}
+.empty-state .ei{font-size:2.5rem;margin-bottom:.8rem}
+.empty-state p{font-size:.9rem}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(7,7,26,.85);
+  backdrop-filter:blur(8px);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:1.5rem;
+}
+.modal-overlay.open{display:flex;animation:fadeIn .25s ease}
+.modal{
+  background:var(--surf);border:1px solid var(--b2);
+  border-radius:var(--r);width:100%;max-width:680px;
+  max-height:90vh;overflow-y:auto;
+  animation:slideUp .3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.4rem 1.6rem;border-bottom:1px solid var(--b1);
+  position:sticky;top:0;background:var(--surf);z-index:1;
+}
+.modal-header h3{font-family:var(--fh);font-weight:800;font-size:1.05rem}
+.modal-close{
+  background:var(--surf2);border:1px solid var(--b2);color:var(--txt);
+  width:32px;height:32px;border-radius:8px;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-body{padding:1.6rem}
+.modal-footer{
+  padding:1.2rem 1.6rem;border-top:1px solid var(--b1);
+  display:flex;gap:.8rem;justify-content:flex-end;flex-wrap:wrap;
+}
+
+/* ── FORM ── */
+.fg{margin-bottom:1.1rem}
+.fg label{display:block;font-size:.8rem;color:var(--mut);margin-bottom:.4rem;font-weight:500}
+.fg input,.fg select,.fg textarea{
+  width:100%;background:var(--surf2);border:1px solid var(--b2);
+  border-radius:10px;padding:.72rem 1rem;color:var(--txt);
+  font-size:.88rem;outline:none;transition:border .2s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(108,99,255,.12)}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237878a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;padding-right:2.2rem;cursor:pointer;-webkit-appearance:none}
+.fg select option{background:var(--surf)}
+.fg textarea{resize:vertical;min-height:120px;line-height:1.65}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;border:none;border-radius:11px;font-family:var(--fh);font-weight:700;font-size:.88rem;cursor:pointer;transition:all .3s;padding:.72rem 1.4rem;white-space:nowrap}
+.btn-primary{background:var(--grad);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(108,99,255,.45)}
+.btn-outline{background:transparent;color:var(--txt);border:1.5px solid var(--b2)}
+.btn-outline:hover{background:var(--surf2);border-color:var(--p);color:var(--p2)}
+.btn-success{background:linear-gradient(135deg,#06d6a0,#4fc3f7);color:#07071a}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(6,214,160,.4)}
+.btn-danger{background:linear-gradient(135deg,#ff6b6b,#ff9f43);color:#fff}
+.btn-danger:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,107,107,.4)}
+.btn-sm{padding:.48rem 1rem;font-size:.8rem;border-radius:9px}
+.btn-full{width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important}
+
+/* ── INFO GRID ── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
+.info-item label{font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;display:block;font-family:var(--fm)}
+.info-item span{font-size:.9rem;color:var(--txt);font-weight:500}
+.info-item.full{grid-column:1/-1}
+
+/* ── AI BRIEF BOX ── */
+.ai-brief{background:rgba(108,99,255,.07);border:1px solid rgba(108,99,255,.25);border-radius:12px;padding:1.2rem;margin-bottom:1rem}
+.ai-brief-label{font-size:.7rem;font-family:var(--fm);text-transform:uppercase;letter-spacing:.08em;color:var(--p2);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem}
+.ai-brief p{font-size:.855rem;color:var(--txt);line-height:1.7;white-space:pre-wrap}
+.outreach-box{background:rgba(6,214,160,.06);border:1px solid rgba(6,214,160,.22);border-radius:12px;padding:1.2rem;margin-bottom:1rem}
+.outreach-label{font-size:.7rem;font-family:var(--fm);text-transform:uppercase;letter-spacing:.08em;color:var(--g3);margin-bottom:.6rem}
+.outreach-box pre{font-size:.8rem;color:var(--txt);line-height:1.75;white-space:pre-wrap;font-family:var(--fb)}
+
+/* ── TEMPLATES PAGE ── */
+.templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem}
+.tmpl-card{background:var(--surf);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;transition:all .3s}
+.tmpl-card:hover{border-color:var(--b2);transform:translateY(-3px)}
+.tmpl-card-header{padding:1.2rem 1.4rem;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:.8rem}
+.tmpl-icon{font-size:1.5rem}
+.tmpl-card-header h3{font-family:var(--fh);font-size:.95rem;font-weight:700}
+.tmpl-card-header p{font-size:.76rem;color:var(--mut);margin-top:.15rem}
+.tmpl-card-body{padding:1.2rem 1.4rem}
+.tmpl-preview{
+  background:var(--bg2);border:1px solid var(--b1);border-radius:9px;
+  padding:.9rem;font-size:.76rem;color:var(--mut);line-height:1.7;
+  max-height:110px;overflow:hidden;position:relative;margin-bottom:1rem;
+  font-family:var(--fb);
+}
+.tmpl-preview::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:40px;
+  background:linear-gradient(transparent,var(--bg2));
+}
+.tmpl-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.tmpl-tag{background:var(--surf2);border:1px solid var(--b1);padding:.18rem .55rem;border-radius:100px;font-size:.7rem;color:var(--mut)}
+.tmpl-card-footer{
+  padding:.9rem 1.4rem;border-top:1px solid var(--b1);
+  display:flex;gap:.6rem;align-items:center;
+}
+.tmpl-uses{font-size:.72rem;color:var(--mut);margin-left:auto;font-family:var(--fm)}
+
+/* ── ANALYTICS ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+.chart-card{background:var(--surf);border:1px solid var(--b1);border-radius:var(--r);padding:1.4rem}
+.chart-card h3{font-family:var(--fh);font-weight:700;font-size:.92rem;margin-bottom:1.2rem}
+.bar-chart{display:flex;flex-direction:column;gap:.7rem}
+.bar-row{display:flex;align-items:center;gap:.8rem}
+.bar-label{font-size:.76rem;color:var(--mut);width:100px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:10px;background:var(--surf2);border-radius:100px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;transition:width 1s ease .2s}
+.bar-val{font-size:.72rem;color:var(--txt);font-family:var(--fm);width:30px;text-align:right}
+.donut-wrap{display:flex;align-items:center;gap:1.5rem}
+.donut-legend{display:flex;flex-direction:column;gap:.6rem}
+.legend-item{display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:var(--mut)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ── SETTINGS ── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.settings-card{background:var(--surf);border:1px solid var(--b1);border-radius:var(--r);padding:1.5rem}
+.settings-card h3{font-family:var(--fh);font-weight:700;font-size:.95rem;margin-bottom:1.3rem;padding-bottom:.8rem;border-bottom:1px solid var(--b1)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--b1);gap:1rem}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info strong{display:block;font-size:.88rem;margin-bottom:.15rem}
+.toggle-info span{font-size:.77rem;color:var(--mut)}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--surf3);border-radius:100px;cursor:pointer;transition:all .3s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--p)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+
+/* ── ACTIVITY FEED ── */
+.activity-feed{background:var(--surf);border:1px solid var(--b1);border-radius:var(--r);padding:1.2rem}
+.activity-feed h3{font-family:var(--fh);font-weight:700;font-size:.92rem;margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--b1)}
+.act-item{display:flex;align-items:flex-start;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--b1)}
+.act-item:last-child{border-bottom:none}
+.act-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.act-blue{background:rgba(108,99,255,.18)}
+.act-green{background:rgba(6,214,160,.18)}
+.act-yellow{background:rgba(255,209,102,.18)}
+.act-red{background:rgba(255,107,107,.18)}
+.act-content{flex:1;min-width:0}
+.act-content strong{display:block;font-size:.83rem;margin-bottom:.15rem;font-family:var(--fh)}
+.act-content span{font-size:.76rem;color:var(--mut)}
+.act-time{font-size:.68rem;color:var(--mut);font-family:var(--fm);white-space:nowrap;flex-shrink:0}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(--surf);border:1px solid var(--b2);color:var(--txt);padding:.8rem 1.5rem;border-radius:12px;font-size:.86rem;z-index:9999;transition:transform .35s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,.55);max-width:90vw;text-align:center;pointer-events:none}
+.toast.up{transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(6,214,160,.4);color:var(--g3)}
+.toast.err{border-color:rgba(255,107,107,.4);color:var(--g1)}
+
+/* ── LOADER ── */
+.btn-loader{display:inline-flex;gap:3px;align-items:center}
+.bl-dot{width:4px;height:4px;background:currentColor;border-radius:50%;animation:blB 1s infinite}
+.bl-dot:nth-child(2){animation-delay:.15s}
+.bl-dot:nth-child(3){animation-delay:.3s}
+@keyframes blB{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.shake{animation:shake .4s ease}
+
+/* ── MISC ── */
+.pill{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .65rem;border-radius:100px;font-size:.72rem;font-family:var(--fm)}
+.pill-purple{background:rgba(108,99,255,.15);color:var(--p2);border:1px solid rgba(108,99,255,.3)}
+.pill-green{background:rgba(6,214,160,.15);color:var(--g3);border:1px solid rgba(6,214,160,.3)}
+.divider{height:1px;background:var(--b1);margin:1.2rem 0}
+.text-mut{color:var(--mut)}
+.text-sm{font-size:.78rem}
+.flex{display:flex;align-items:center}
+.gap-sm{gap:.5rem}
+.mb1{margin-bottom:.8rem}
+.mb2{margin-bottom:1.5rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .chart-grid{grid-template-columns:1fr}
+  .settings-grid{grid-template-columns:1fr}
+}
+@media(max-width:820px){
+  .sidebar{width:70px;min-width:70px}
+  .main{margin-left:70px}
+  .sb-logo-txt,.sb-logo-dot,.sb-admin-badge,.sb-section-label,.sb-item span,.sb-admin-info strong,.sb-admin-info span,.sb-item .sb-badge{display:none}
+  .sb-logo{justify-content:center;padding:1rem}
+  .sb-nav{padding:0 .4rem}
+  .sb-item{justify-content:center;padding:.75rem}
+  .sb-bottom{padding:.7rem}
+  .sb-admin-info{justify-content:center}
+  .info-grid,.fg-row{grid-template-columns:1fr}
+  .tb-search{width:140px}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .content{padding:1.2rem}
+  .topbar{padding:0 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <span class="sb-logo-hex">⬡</span>
+    <span class="sb-logo-txt">PathFinder<span class="sb-logo-dot">.</span></span>
+  </div>
+  <div class="sb-admin-badge">Admin Panel</div>
+
+  <div class="sb-section-label">Management</div>
+  <nav class="sb-nav">
+    <div class="sb-item active" onclick="showPage('dashboard')">
+      <span class="sb-icon">📊</span><span>Dashboard</span>
+    </div>
+    <div class="sb-item" onclick="showPage('bookings')">
+      <span class="sb-icon">📅</span><span>Bookings</span>
+      <span class="sb-badge" id="pendingBadge">0</span>
+    </div>
+    <div class="sb-item" onclick="showPage('assessments')">
+      <span class="sb-icon">🧠</span><span>Assessments</span>
+      <span class="sb-badge green" id="assessBadge">0</span>
+    </div>
+    <div class="sb-item" onclick="showPage('templates')">
+      <span class="sb-icon">📝</span><span>Email Templates</span>
+    </div>
+  </nav>
+
+  <div class="sb-section-label">System</div>
+  <nav class="sb-nav">
+    <div class="sb-item" onclick="showPage('analytics')">
+      <span class="sb-icon">📈</span><span>Analytics</span>
+    </div>
+    <div class="sb-item" onclick="showPage('settings')">
+      <span class="sb-icon">⚙️</span><span>Settings</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-item" onclick="window.open('index.html','_blank')">
+      <span class="sb-icon">🌐</span><span>View Website</span>
+    </div>
+  </nav>
+
+  <div class="sb-bottom">
+    <div class="sb-admin-info">
+      <div class="sb-avatar">🧑‍💼</div>
+      <div>
+        <strong>Admin</strong>
+        <span>● Live</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>
+      <span class="topbar-title" id="pageTitle">Dashboard</span>
+      <span class="topbar-sub" id="pageDate"></span>
+    </div>
+    <div class="topbar-right">
+      <input class="tb-search" type="text" placeholder="🔍  Search bookings…" oninput="searchBookings(this.value)">
+      <button class="tb-btn" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="tb-btn-primary" onclick="openNewBookingModal()">+ New Booking</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card sc1">
+          <div class="stat-label">Total Bookings</div>
+          <div class="stat-val" id="statTotal">0</div>
+          <div class="stat-sub">All time</div>
+          <div class="stat-trend trend-up" id="statTotalTrend">↑ Loading…</div>
+        </div>
+        <div class="stat-card sc2">
+          <div class="stat-label">Approved</div>
+          <div class="stat-val" id="statApproved">0</div>
+          <div class="stat-sub">Sessions confirmed</div>
+          <div class="stat-trend trend-up">↑ Ready to attend</div>
+        </div>
+        <div class="stat-card sc3">
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-val" id="statPending">0</div>
+          <div class="stat-sub">Awaiting action</div>
+          <div class="stat-trend trend-down">⚠ Needs attention</div>
+        </div>
+        <div class="stat-card sc4">
+          <div class="stat-label">Assessments</div>
+          <div class="stat-val" id="statAssess">0</div>
+          <div class="stat-sub">Completed today</div>
+          <div class="stat-trend trend-up">↑ Active users</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:1.2rem">
+        <!-- Recent Bookings -->
+        <div>
+          <div class="sec-hd">
+            <h2>Recent Bookings</h2>
+            <div class="sec-hd-right">
+              <button class="tb-btn btn-sm" onclick="showPage('bookings')">View All →</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Student</th><th>Session</th><th>Date</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="dashBookingsTbody">
+                <tr><td colspan="5"><div class="empty-state"><div class="ei">📭</div><p>No bookings yet — they'll appear here when students book sessions.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div>
+          <div class="sec-hd"><h2>Activity Feed</h2></div>
+          <div class="activity-feed">
+            <h3>Recent Activity</h3>
+            <div id="activityFeed">
+              <div class="act-item">
+                <div class="act-icon act-blue">🚀</div>
+                <div class="act-content">
+                  <strong>Admin Dashboard Loaded</strong>
+                  <span>System is live and running</span>
+                </div>
+                <span class="act-time">Now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ BOOKINGS ═══════════════════ -->
+    <div class="page" id="page-bookings">
+      <div class="sec-hd mb2">
+        <h2>All Bookings</h2>
+        <div class="sec-hd-right">
+          <button class="tb-btn btn-sm" onclick="filterBookings('all')" id="f-all">All</button>
+          <button class="tb-btn btn-sm" onclick="filterBookings('pending')" id="f-pending">Pending</button>
+          <button class="tb-btn btn-sm" onclick="filterBookings('approved')" id="f-approved">Approved</button>
+          <button class="tb-btn btn-sm" onclick="filterBookings('completed')" id="f-completed">Completed</button>
+          <button class="tb-btn btn-sm" onclick="filterBookings('rejected')" id="f-rejected">Rejected</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Ref</th><th>Student</th><th>Session Type</th><th>Date</th><th>Booked</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="bookingsTbody">
+            <tr><td colspan="7"><div class="empty-state"><div class="ei">📅</div><p>No bookings yet. Students will appear here once they book sessions.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ ASSESSMENTS ═══════════════════ -->
+    <div class="page" id="page-assessments">
+      <div class="sec-hd mb2">
+        <h2>Assessment Results</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Track</th><th>Top Skill Match</th><th>2nd Match</th><th>3rd Match</th><th>Completed</th><th>Action</th>
+          </tr></thead>
+          <tbody id="assessTbody">
+            <tr><td colspan="6"><div class="empty-state"><div class="ei">🧠</div><p>Assessment results will appear here as students complete the quiz.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ EMAIL TEMPLATES ═══════════════════ -->
+    <div class="page" id="page-templates">
+      <div class="sec-hd mb2">
+        <h2>Email Templates</h2>
+        <div class="sec-hd-right">
+          <span class="pill pill-green">✓ All connected to template_k10if29</span>
+        </div>
+      </div>
+      <div class="templates-grid" id="templatesGrid"></div>
+    </div>
+
+    <!-- ═══════════════════ ANALYTICS ═══════════════════ -->
+    <div class="page" id="page-analytics">
+      <div class="sec-hd mb2"><h2>Analytics Overview</h2></div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3>Top Session Types</h3>
+          <div class="bar-chart" id="sessionTypeChart"></div>
+        </div>
+        <div class="chart-card">
+          <h3>Booking Status Breakdown</h3>
+          <div class="donut-wrap">
+            <canvas id="donutCanvas" width="120" height="120"></canvas>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Top Skill Recommendations</h3>
+          <div class="bar-chart" id="skillChart"></div>
+        </div>
+        <div class="chart-card">
+          <h3>Assessment Track Split</h3>
+          <div class="bar-chart" id="trackChart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ SETTINGS ═══════════════════ -->
+    <div class="page" id="page-settings">
+      <div class="sec-hd mb2"><h2>System Settings</h2></div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>📧 Email Configuration</h3>
+          <div class="fg"><label>Public Key</label><input type="text" value="c2o6wFn8GxZfTVqzd" readonly style="font-family:var(--fm);font-size:.8rem"></div>
+          <div class="fg"><label>Service ID</label><input type="text" value="service_uws34sm" readonly style="font-family:var(--fm);font-size:.8rem"></div>
+          <div class="fg"><label>Template ID (all)</label><input type="text" value="template_k10if29" readonly style="font-family:var(--fm);font-size:.8rem"></div>
+          <div class="fg"><label>Admin Email</label><input type="text" value="ajibadei75@gmail.com" readonly style="font-family:var(--fm);font-size:.8rem"></div>
+          <div style="display:flex;align-items:center;gap:.6rem;background:rgba(6,214,160,.08);border:1px solid rgba(6,214,160,.25);border-radius:10px;padding:.8rem 1rem;font-size:.82rem;color:var(--g3)">
+            <span>●</span> All email credentials active and verified
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>🔔 Notification Settings</h3>
+          <div class="toggle-row">
+            <div class="toggle-info"><strong>New Booking Alert</strong><span>Email when a student books a session</span></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><strong>Assessment Completed</strong><span>Email when quiz is finished</span></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><strong>Auto-send Confirmation</strong><span>Auto email student on booking</span></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><strong>Approval Email</strong><span>Send approval email when status changes</span></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>🤖 AI Settings</h3>
+          <div class="fg"><label>AI Model</label><input type="text" value="claude-sonnet-4-20250514" readonly style="font-family:var(--fm);font-size:.78rem"></div>
+          <div class="fg"><label>Max Tokens (per request)</label><input type="number" value="1200" id="maxTokensSetting"></div>
+          <div class="toggle-row">
+            <div class="toggle-info"><strong>AI Session Brief</strong><span>Generate counsellor brief on booking</span></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><strong>AI Outreach Email</strong><span>Generate ready-to-send outreach draft</span></div>
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>🗄️ Data Management</h3>
+          <div class="fg"><label>Storage</label><input value="Browser localStorage" readonly></div>
+          <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:.5rem">
+            <button class="btn btn-outline btn-full" onclick="exportCSV()">⬇ Export All Bookings (CSV)</button>
+            <button class="btn btn-outline btn-full" onclick="exportAssessJSON()">⬇ Export Assessments (JSON)</button>
+            <button class="btn btn-full" style="background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);color:var(--g1);border-radius:11px;padding:.72rem;font-family:var(--fh);font-weight:700" onclick="clearAllData()">🗑 Clear All Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ═══ BOOKING DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Booking Details</h3>
+      <button class="modal-close" onclick="closeModal('bookingModal')">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- ═══ NEW BOOKING MODAL ═══ -->
+<div class="modal-overlay" id="newBookingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>➕ Create New Booking</h3>
+      <button class="modal-close" onclick="closeModal('newBookingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg-row">
+        <div class="fg"><label>Full Name *</label><input type="text" id="nb-name" placeholder="Student full name"></div>
+        <div class="fg"><label>Email Address *</label><input type="email" id="nb-email" placeholder="student@email.com"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Session Type *</label>
+          <select id="nb-type">
+            <option value="">Select type...</option>
+            <option>Academic Course Guidance</option>
+            <option>Career Skills Planning</option>
+            <option>Full Life & Career Coaching</option>
+            <option>Quick 30-min Consultation</option>
+          </select>
+        </div>
+        <div class="fg"><label>Preferred Date *</label><input type="date" id="nb-date"></div>
+      </div>
+      <div class="fg"><label>Student's Note</label><textarea id="nb-note" placeholder="What is the student confused or struggling with?" rows="3"></textarea></div>
+      <div class="fg"><label>Initial Status</label>
+        <select id="nb-status">
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('newBookingModal')">Cancel</button>
+      <button class="btn btn-primary" id="createBookingBtn" onclick="createBooking()">Create Booking →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SEND EMAIL MODAL ═══ -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📧 Send Email to Student</h3>
+      <button class="modal-close" onclick="closeModal('emailModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label>Template</label>
+        <select id="em-template" onchange="loadEmailTemplate()">
+          <option value="">Select a template...</option>
+          <option value="approval">✅ Session Approval</option>
+          <option value="rejection">❌ Session Rejection</option>
+          <option value="reminder">🔔 Session Reminder</option>
+          <option value="reschedule">🗓 Reschedule Request</option>
+          <option value="followup">🔄 Post-Session Follow-up</option>
+          <option value="roadmap">🗺 Learning Roadmap Delivery</option>
+          <option value="custom">✏️ Custom Message</option>
+        </select>
+      </div>
+      <div class="fg"><label>To</label><input type="email" id="em-to" readonly style="font-family:var(--fm);font-size:.82rem"></div>
+      <div class="fg"><label>Subject</label><input type="text" id="em-subject" placeholder="Email subject line"></div>
+      <div class="fg"><label>Message</label><textarea id="em-body" rows="10" placeholder="Email body…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('emailModal')">Cancel</button>
+      <button class="btn btn-primary" id="sendEmailBtn" onclick="sendTemplateEmail()">Send Email →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   PATHFINDER ADMIN — FULL DASHBOARD LOGIC
+   ===================================================== */
+
+const ADMIN_MODEL = "claude-sonnet-4-20250514";
+const LS_BOOKINGS   = 'pf_admin_bookings';
+const LS_ASSESSMENTS= 'pf_admin_assessments';
+let allBookings   = [];
+let allAssessments= [];
+let currentFilter = 'all';
+let activeBooking = null; // booking being viewed/actioned
+
+// ── STORAGE ───────────────────────────────────────────
+function saveBookings(){ try{ localStorage.setItem(LS_BOOKINGS, JSON.stringify(allBookings)); }catch(e){} }
+function saveAssessments(){ try{ localStorage.setItem(LS_ASSESSMENTS, JSON.stringify(allAssessments)); }catch(e){} }
+
+function loadData(){
+  try{ allBookings    = JSON.parse(localStorage.getItem(LS_BOOKINGS)  || '[]'); }catch(e){ allBookings=[]; }
+  try{ allAssessments = JSON.parse(localStorage.getItem(LS_ASSESSMENTS)||'[]'); }catch(e){ allAssessments=[]; }
+
+  // Seed demo data if empty so dashboard looks populated
+  if(allBookings.length === 0) seedDemoData();
+}
+
+function seedDemoData(){
+  const types = ['Academic Course Guidance','Career Skills Planning','Full Life & Career Coaching','Quick 30-min Consultation'];
+  const statuses = ['pending','approved','completed','pending','approved'];
+  const names = [
+    {n:'Adaeze Okonkwo',e:'adaeze@gmail.com'},
+    {n:'Kolade Musa',e:'kolade.m@yahoo.com'},
+    {n:'Fatimah Ibrahim',e:'fatimah.i@outlook.com'},
+    {n:'Emeka Chukwu',e:'emeka.c@gmail.com'},
+    {n:'Tunde Afolabi',e:'tunde.a@gmail.com'}
+  ];
+  const now = Date.now();
+  allBookings = names.map((s,i)=>({
+    id:'PF-DEMO'+i,
+    ref:'PF-DEMO'+String(i+1).padStart(3,'0'),
+    name:s.n, email:s.e,
+    type:types[i%types.length],
+    date:new Date(now+(i*3-2)*24*60*60*1000).toISOString().split('T')[0],
+    note: i===0?'Confused between law and tech. Interested in LegalTech.'
+        : i===1?'Love numbers but accounting feels limiting. Exploring data science.'
+        : i===2?'Studying mass comm but want to get into design.'
+        : i===3?'English grad wanting to transition into tech writing.'
+        :'Medical student building a health app alongside MBBS.',
+    status:statuses[i],
+    bookedAt:new Date(now-(i+1)*18*60*60*1000).toLocaleString('en-GB'),
+    adminBrief:'',
+    outreachEmail:'',
+    aiConfirmation:''
+  }));
+
+  allAssessments = [
+    {track:'Academic',skills:['Data Science (94%)','Software Dev (87%)','FinTech (79%)'],date:new Date(now-2*60*60*1000).toLocaleString('en-GB')},
+    {track:'Personal',skills:['UI/UX Design (96%)','Content Creation (88%)','Digital Marketing (82%)'],date:new Date(now-4*60*60*1000).toLocaleString('en-GB')},
+    {track:'Academic',skills:['AI & ML (98%)','Software Dev (91%)','Cybersecurity (83%)'],date:new Date(now-6*60*60*1000).toLocaleString('en-GB')},
+  ];
+  saveBookings();
+  saveAssessments();
+}
+
+// ── NAVIGATION ────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i => {
+    if(i.getAttribute('onclick') && i.getAttribute('onclick').includes("'"+id+"'"))
+      i.classList.add('active');
+  });
+  const titles = {dashboard:'Dashboard',bookings:'Bookings',assessments:'Assessments',templates:'Email Templates',analytics:'Analytics',settings:'Settings'};
+  document.getElementById('pageTitle').textContent = titles[id]||id;
+  if(id==='bookings')   renderBookingsTable(allBookings);
+  if(id==='assessments')renderAssessmentsTable();
+  if(id==='analytics')  renderAnalytics();
+  if(id==='templates')  renderTemplates();
+}
+
+// ── INIT ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  loadData();
+  updateStats();
+  renderDashboard();
+  document.getElementById('pageDate').textContent =
+    '  ·  ' + new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('nb-date').min = new Date().toISOString().split('T')[0];
+});
+
+// ── STATS ─────────────────────────────────────────────
+function updateStats(){
+  const total    = allBookings.length;
+  const approved = allBookings.filter(b=>b.status==='approved'||b.status==='completed').length;
+  const pending  = allBookings.filter(b=>b.status==='pending').length;
+  const assess   = allAssessments.length;
+  document.getElementById('statTotal').textContent   = total;
+  document.getElementById('statApproved').textContent= approved;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statAssess').textContent  = assess;
+  document.getElementById('statTotalTrend').textContent = pending > 0 ? `⚠ ${pending} pending action` : '✓ All up to date';
+  document.getElementById('pendingBadge').textContent = pending;
+  document.getElementById('assessBadge').textContent  = assess;
+  if(pending===0) document.getElementById('pendingBadge').style.display='none';
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+function renderDashboard(){
+  const tbody = document.getElementById('dashBookingsTbody');
+  const recent = allBookings.slice(0,5);
+  if(!recent.length){
+    tbody.innerHTML=`<tr><td colspan="5"><div class="empty-state"><div class="ei">📭</div><p>No bookings yet.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = recent.map(b=>`
+    <tr>
+      <td><div class="student-name">${esc(b.name)}</div><div class="student-email">${esc(b.email)}</div></td>
+      <td class="session-type">${esc(b.type)}</td>
+      <td>${formatDate(b.date)}</td>
+      <td>${statusBadge(b.status)}</td>
+      <td>
+        <button class="action-btn view" onclick="viewBooking('${b.id}')">View</button>
+        ${b.status==='pending'?`<button class="action-btn approve" onclick="quickApprove('${b.id}')">Approve</button>`:''}
+      </td>
+    </tr>`).join('');
+}
+
+// ── BOOKINGS TABLE ────────────────────────────────────
+function renderBookingsTable(data){
+  const tbody = document.getElementById('bookingsTbody');
+  if(!data||!data.length){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="ei">📅</div><p>No bookings found.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map(b=>`
+    <tr>
+      <td><span class="booking-ref">${b.ref||b.id}</span></td>
+      <td><div class="student-name">${esc(b.name)}</div><div class="student-email">${esc(b.email)}</div></td>
+      <td class="session-type">${esc(b.type)}</td>
+      <td>${formatDate(b.date)}</td>
+      <td class="text-sm text-mut">${b.bookedAt||'—'}</td>
+      <td>${statusBadge(b.status)}</td>
+      <td>
+        <button class="action-btn view" onclick="viewBooking('${b.id}')">👁 View</button>
+        ${b.status==='pending'?`<button class="action-btn approve" onclick="quickApprove('${b.id}')">✓ Approve</button><button class="action-btn reject" onclick="quickReject('${b.id}')">✗ Reject</button>`:''}
+        <button class="action-btn" onclick="openEmailModal('${b.id}')">📧 Email</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterBookings(f){
+  currentFilter = f;
+  document.querySelectorAll('[id^="f-"]').forEach(b=>b.classList.remove('on'));
+  const btn = document.getElementById('f-'+f);
+  if(btn) btn.classList.add('on');
+  const filtered = f==='all' ? allBookings : allBookings.filter(b=>b.status===f);
+  renderBookingsTable(filtered);
+}
+
+function searchBookings(q){
+  if(!q.trim()){ renderBookingsTable(allBookings); return; }
+  const lq = q.toLowerCase();
+  renderBookingsTable(allBookings.filter(b=>
+    b.name.toLowerCase().includes(lq)||
+    b.email.toLowerCase().includes(lq)||
+    b.type.toLowerCase().includes(lq)||
+    (b.ref||b.id).toLowerCase().includes(lq)
+  ));
+}
+
+// ── VIEW BOOKING ──────────────────────────────────────
+function viewBooking(id){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+  activeBooking = b;
+
+  document.getElementById('modalTitle').textContent = `📋 Booking — ${b.name}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="info-grid">
+      <div class="info-item"><label>Booking Ref</label><span style="font-family:var(--fm)">${b.ref||b.id}</span></div>
+      <div class="info-item"><label>Status</label><span>${statusBadge(b.status)}</span></div>
+      <div class="info-item"><label>Student Name</label><span>${esc(b.name)}</span></div>
+      <div class="info-item"><label>Student Email</label><span style="font-family:var(--fm)">${esc(b.email)}</span></div>
+      <div class="info-item"><label>Session Type</label><span>${esc(b.type)}</span></div>
+      <div class="info-item"><label>Preferred Date</label><span>${formatDate(b.date)}</span></div>
+      <div class="info-item"><label>Booked At</label><span>${b.bookedAt||'—'}</span></div>
+      <div class="info-item full"><label>Student's Note</label><span>${esc(b.note)||'No note provided.'}</span></div>
+    </div>
+    ${b.adminBrief ? `<div class="ai-brief"><div class="ai-brief-label">🤖 AI Session Brief</div><p>${esc(b.adminBrief)}</p></div>` : `<div class="ai-brief" style="cursor:pointer" onclick="generateBrief('${b.id}')"><div class="ai-brief-label">🤖 AI Session Brief — <span style="color:var(--g2)">Click to generate</span></div><p style="color:var(--mut)">No brief yet. Click to generate an AI session brief for this student.</p></div>`}
+    ${b.outreachEmail ? `<div class="outreach-box"><div class="outreach-label">📨 Ready-to-Send Outreach Email</div><pre>${esc(b.outreachEmail)}</pre></div>` : ''}
+    <div class="divider"></div>
+    <div class="fg"><label>Change Status</label>
+      <select id="statusSelect" onchange="changeStatus('${b.id}',this.value)">
+        <option value="pending"   ${b.status==='pending'   ?'selected':''}>⏳ Pending</option>
+        <option value="approved"  ${b.status==='approved'  ?'selected':''}>✅ Approved</option>
+        <option value="completed" ${b.status==='completed' ?'selected':''}>🎓 Completed</option>
+        <option value="rejected"  ${b.status==='rejected'  ?'selected':''}>❌ Rejected</option>
+      </select>
+    </div>`;
+
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="btn btn-outline btn-sm" onclick="closeModal('bookingModal')">Close</button>
+    <button class="btn btn-sm" style="background:var(--surf2);border:1px solid var(--b2);color:var(--txt)" onclick="generateBrief('${b.id}')">🤖 Re-generate Brief</button>
+    <button class="btn btn-sm" style="background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);color:var(--p2)" onclick="openEmailModal('${b.id}');closeModal('bookingModal')">📧 Send Email</button>
+    ${b.status==='pending'?`<button class="btn btn-success btn-sm" onclick="quickApprove('${b.id}');closeModal('bookingModal')">✓ Approve</button><button class="btn btn-danger btn-sm" onclick="quickReject('${b.id}');closeModal('bookingModal')">✗ Reject</button>`:''}`;
+
+  openModal('bookingModal');
+}
+
+// ── QUICK ACTIONS ─────────────────────────────────────
+function quickApprove(id){
+  changeStatus(id,'approved');
+  toast('✅ Booking approved — approval email sent!','ok');
+  sendApprovalEmail(id);
+}
+
+function quickReject(id){
+  changeStatus(id,'rejected');
+  toast('❌ Booking rejected — student notified.','err');
+  sendRejectionEmail(id);
+}
+
+function changeStatus(id, status){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+  b.status = status;
+  saveBookings();
+  updateStats();
+  renderDashboard();
+  filterBookings(currentFilter);
+  addActivity(`Status changed to ${status}`, `${b.name}'s booking`, status==='approved'?'green':status==='rejected'?'red':'blue');
+}
+
+// ── AI BRIEF GENERATION ───────────────────────────────
+async function generateBrief(id){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+  const bodyEl = document.getElementById('modalBody');
+  const briefEl = bodyEl?.querySelector('.ai-brief');
+  if(briefEl){ briefEl.innerHTML = '<div class="ai-brief-label">🤖 AI Session Brief</div><p style="color:var(--mut)">Generating with AI…</p>'; }
+  toast('Generating AI session brief…');
+
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:ADMIN_MODEL, max_tokens:1200,
+        messages:[{role:"user",content:
+`You are PathFinder's AI counselling assistant. Generate a full professional session brief for this booking.
+
+STUDENT: ${b.name} (${b.email})
+SESSION TYPE: ${b.type}
+DATE: ${formatDate(b.date)}
+REF: ${b.ref||b.id}
+STUDENT'S NOTE: "${b.note||'None provided'}"
+
+Return ONLY valid JSON:
+{
+  "admin_brief": "Professional 150-200 word session brief for the counsellor. Include: (1) Student profile summary, (2) Likely pain points to explore in the session, (3) 3 specific preparation tips for the counsellor, (4) Suggested session agenda with timing.",
+  "outreach_email": "Complete ready-to-send email FROM counsellor TO student. First line: Subject: [subject here]. Then blank line. Then full professional email body introducing the counsellor, confirming session details, asking 2 preparation questions, and closing warmly. Sign off as 'The PathFinder Team'."
+}`}]
+      })
+    });
+    const json = await res.json();
+    const parsed = JSON.parse((json.content?.[0]?.text||'{}').replace(/```json|```/g,'').trim());
+    b.adminBrief    = parsed.admin_brief     || 'Brief generated.';
+    b.outreachEmail = parsed.outreach_email  || '';
+    saveBookings();
+    viewBooking(id); // refresh modal
+    toast('✅ AI session brief generated!','ok');
+    addActivity('AI brief generated', b.name, 'blue');
+  }catch(e){
+    toast('AI generation failed — try again','err');
+    console.error(e);
+  }
+}
+
+// ── NEW BOOKING ───────────────────────────────────────
+function openNewBookingModal(){ openModal('newBookingModal'); }
+
+async function createBooking(){
+  const name  = document.getElementById('nb-name').value.trim();
+  const email = document.getElementById('nb-email').value.trim();
+  const type  = document.getElementById('nb-type').value;
+  const date  = document.getElementById('nb-date').value;
+  const note  = document.getElementById('nb-note').value.trim();
+  const status= document.getElementById('nb-status').value;
+  if(!name||!email||!type||!date){ toast('Please fill all required fields','err'); return; }
+
+  const btn = document.getElementById('createBookingBtn');
+  btn.disabled=true; btn.textContent='Creating…';
+
+  const id  = 'PF-'+Date.now().toString(36).toUpperCase();
+  const ref = 'PF-'+Date.now().toString(36).slice(-6).toUpperCase();
+  const booking = {id,ref,name,email,type,date,note,status,bookedAt:new Date().toLocaleString('en-GB'),adminBrief:'',outreachEmail:'',aiConfirmation:''};
+  allBookings.unshift(booking);
+  saveBookings();
+  updateStats();
+  renderDashboard();
+  closeModal('newBookingModal');
+  document.getElementById('nb-name').value='';
+  document.getElementById('nb-email').value='';
+  document.getElementById('nb-type').value='';
+  document.getElementById('nb-note').value='';
+  toast(`✅ Booking created for ${name}`,'ok');
+  addActivity('New booking created',`${name} — ${type}`,'green');
+  if(status==='approved') sendApprovalEmail(id);
+
+  btn.disabled=false; btn.textContent='Create Booking →';
+}
+
+// ── EMAIL MODAL & TEMPLATES ───────────────────────────
+const EMAIL_TEMPLATES = {
+  approval:{
+    subject:"✅ Your PathFinder Session is Confirmed!",
+    body:`Dear {{name}},
+
+We are delighted to confirm your {{type}} session with PathFinder! 🎉
+
+📅 Date: {{date}}
+🔖 Reference: {{ref}}
+👤 Counsellor: PathFinder Certified Advisor
+
+Your counsellor has reviewed your profile and is fully prepared to guide you. Here is what to expect:
+
+✅ A personalised 1-on-1 session focused entirely on your goals
+✅ A custom 6-month learning roadmap created just for you
+✅ Honest, expert advice based on your unique strengths and interests
+
+To make the most of your session, please take 10 minutes beforehand to:
+1. Write down 3 things you are most confused or anxious about
+2. Think about where you want to be in 2 years from now
+3. Note any skills or subjects that genuinely excite you
+
+We will send you a meeting link 24 hours before your session.
+
+We look forward to helping you find your path!
+
+Warm regards,
+The PathFinder Team
+📧 ajibadei75@gmail.com | 🌐 pathfinder.app`
+  },
+  rejection:{
+    subject:"📅 Regarding Your PathFinder Session Request",
+    body:`Dear {{name}},
+
+Thank you for your interest in booking a counselling session with PathFinder.
+
+Unfortunately, we are unable to accommodate your requested slot for {{date}} at this time due to limited availability.
+
+We sincerely apologise for any inconvenience this may cause.
+
+Here is what we can offer instead:
+
+🔄 Option 1: Please rebook at a different date using our booking form
+🤖 Option 2: Chat with our PathAI advisor (available 24/7, completely free)
+📝 Option 3: Complete our full assessment for instant personalised recommendations
+
+We value your interest and want to make sure you get the guidance you deserve. Please do not hesitate to reach out and we will do everything we can to schedule a session for you soon.
+
+Warm regards,
+The PathFinder Team
+📧 ajibadei75@gmail.com | 🌐 pathfinder.app`
+  },
+  reminder:{
+    subject:"🔔 Reminder: Your PathFinder Session is Tomorrow!",
+    body:`Dear {{name}},
+
+This is a friendly reminder that your {{type}} session with PathFinder is coming up tomorrow!
+
+📅 Session Date: {{date}}
+🔖 Reference: {{ref}}
+
+Quick checklist before your session:
+☐ Find a quiet, distraction-free space
+☐ Prepare your top 3 questions or concerns
+☐ Have a notebook ready to capture your roadmap
+☐ Test your audio/video connection in advance
+
+Your counsellor is ready and looking forward to meeting you. This session has been specifically prepared based on your profile — you are in great hands.
+
+If you need to reschedule, please reply to this email at least 6 hours in advance.
+
+See you tomorrow! 😊
+
+The PathFinder Team
+📧 ajibadei75@gmail.com`
+  },
+  reschedule:{
+    subject:"🗓 Rescheduling Your PathFinder Session",
+    body:`Dear {{name}},
+
+We hope you are doing well! We are reaching out regarding your upcoming {{type}} session (Ref: {{ref}}).
+
+We need to reschedule your session from {{date}} due to unforeseen circumstances. We sincerely apologise for the inconvenience.
+
+New Proposed Date: [INSERT DATE]
+New Proposed Time: [INSERT TIME]
+
+Please reply to this email to confirm the new slot works for you, or suggest an alternative date that suits you better.
+
+We value your time and want to ensure you receive the best possible guidance. Thank you for your understanding and flexibility.
+
+Looking forward to supporting your journey!
+
+The PathFinder Team
+📧 ajibadei75@gmail.com`
+  },
+  followup:{
+    subject:"🔄 How Did Your PathFinder Session Go?",
+    body:`Dear {{name}},
+
+We hope your {{type}} session with PathFinder was helpful and inspiring! It was a pleasure speaking with you.
+
+As promised, here is a quick summary of your session:
+
+🎯 Key Points Discussed: [Counsellor to add summary]
+📍 Your Top 3 Recommended Skills: [Counsellor to add]
+🗺 Next Steps on Your Roadmap: [Counsellor to add]
+
+Your Action Items This Week:
+1. [Action 1 — to be filled by counsellor]
+2. [Action 2 — to be filled by counsellor]
+3. [Action 3 — to be filled by counsellor]
+
+We will check in with you in 30 days to see how your progress is going. In the meantime, please feel free to use our PathAI chat at any time for quick advice.
+
+Remember: Every great journey starts with a single step. You have already taken yours. Keep going! 💪
+
+With encouragement,
+The PathFinder Team
+📧 ajibadei75@gmail.com`
+  },
+  roadmap:{
+    subject:"🗺 Your Personal Learning Roadmap from PathFinder",
+    body:`Dear {{name}},
+
+Following your {{type}} session with PathFinder, we have put together your personalised 6-month learning roadmap as promised.
+
+🎯 YOUR RECOMMENDED SKILL PATH
+[Counsellor: insert top recommended skill/course here]
+
+📅 6-MONTH ROADMAP
+
+Month 1-2: Foundation
+• [Milestone 1]
+• [Milestone 2]
+• Resources: [Links]
+
+Month 3-4: Building
+• [Milestone 3]
+• [Milestone 4]
+• Resources: [Links]
+
+Month 5-6: Application
+• [Milestone 5]
+• Build your first portfolio project
+• Start applying / freelancing
+
+📚 FREE RESOURCES TO GET STARTED
+• [Resource 1]
+• [Resource 2]
+• [Resource 3]
+
+This roadmap is tailored specifically for you based on your strengths, goals and current situation. Trust the process and take it one step at a time.
+
+We believe in you completely. 🌟
+
+The PathFinder Team
+📧 ajibadei75@gmail.com`
+  },
+  custom:{
+    subject:"Message from PathFinder",
+    body:`Dear {{name}},
+
+[Write your message here]
+
+Warm regards,
+The PathFinder Team
+📧 ajibadei75@gmail.com`
+  }
+};
+
+function openEmailModal(id){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+  activeBooking = b;
+  document.getElementById('em-to').value = b.email;
+  document.getElementById('em-template').value = '';
+  document.getElementById('em-subject').value = '';
+  document.getElementById('em-body').value = '';
+  openModal('emailModal');
+}
+
+function loadEmailTemplate(){
+  const key = document.getElementById('em-template').value;
+  const b   = activeBooking;
+  if(!key || !b) return;
+  const t = EMAIL_TEMPLATES[key];
+  if(!t) return;
+  const replace = s => s
+    .replace(/\{\{name\}\}/g, b.name)
+    .replace(/\{\{type\}\}/g, b.type)
+    .replace(/\{\{date\}\}/g, formatDate(b.date))
+    .replace(/\{\{ref\}\}/g,  b.ref||b.id)
+    .replace(/\{\{email\}\}/g,b.email);
+  document.getElementById('em-subject').value = replace(t.subject);
+  document.getElementById('em-body').value    = replace(t.body);
+}
+
+async function sendTemplateEmail(){
+  const to      = document.getElementById('em-to').value.trim();
+  const subject = document.getElementById('em-subject').value.trim();
+  const body    = document.getElementById('em-body').value.trim();
+  if(!to||!subject||!body){ toast('Please fill all fields','err'); return; }
+
+  const btn = document.getElementById('sendEmailBtn');
+  btn.disabled=true; btn.innerHTML='<span class="btn-loader"><span class="bl-dot"></span><span class="bl-dot"></span><span class="bl-dot"></span></span> Sending…';
+
+  const cfg = window.EMAILJS_CONFIG || {};
+  try{
+    if(window.emailjs && cfg.serviceId && cfg.bookingTemplateId){
+      emailjs.init({publicKey:cfg.publicKey});
+      await emailjs.send(cfg.serviceId, cfg.bookingTemplateId,{
+        to_email:    to,
+        to_name:     activeBooking?.name||'Student',
+        subject:     subject,
+        ai_message:  body,
+        booking_ref: activeBooking?.ref||'—',
+        student_name:activeBooking?.name||'—',
+        student_email:to,
+        session_type:activeBooking?.type||'—',
+        session_date:formatDate(activeBooking?.date||''),
+        student_note:activeBooking?.note||'—',
+        booked_at:   activeBooking?.bookedAt||'—',
+        outreach_email:'',outreach_subject:'',
+        track_type:'',top_skills:'',full_answers:'',
+        reply_to:    cfg.adminEmail
+      });
+      toast(`✅ Email sent to ${to}`,'ok',5000);
+      addActivity('Email sent',`To: ${to} — ${subject.slice(0,40)}…`,'blue');
+    } else {
+      toast('EmailJS not loaded — check credentials','err');
+    }
+  }catch(e){
+    console.error(e);
+    toast('Email failed — check console','err');
+  }
+  closeModal('emailModal');
+  btn.disabled=false; btn.textContent='Send Email →';
+}
+
+async function sendApprovalEmail(id){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+  const t = EMAIL_TEMPLATES.approval;
+  const replace = s => s.replace(/\{\{name\}\}/g,b.name).replace(/\{\{type\}\}/g,b.type).replace(/\{\{date\}\}/g,formatDate(b.date)).replace(/\{\{ref\}\}/g,b.ref||b.id).replace(/\{\{email\}\}/g,b.email);
+  const cfg = window.EMAILJS_CONFIG||{};
+  try{
+    if(window.emailjs && cfg.serviceId){
+      emailjs.init({publicKey:cfg.publicKey});
+      await emailjs.send(cfg.serviceId,cfg.bookingTemplateId,{
+        to_email:b.email,to_name:b.name,
+        subject:replace(t.subject),ai_message:replace(t.body),
+        booking_ref:b.ref||b.id,student_name:b.name,student_email:b.email,
+        session_type:b.type,session_date:formatDate(b.date),
+        student_note:b.note||'—',booked_at:b.bookedAt||'—',
+        outreach_email:'',outreach_subject:'',track_type:'',top_skills:'',full_answers:'',
+        reply_to:cfg.adminEmail
+      });
+    }
+  }catch(e){ console.error('Approval email failed:',e); }
+}
+
+async function sendRejectionEmail(id){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+  const t = EMAIL_TEMPLATES.rejection;
+  const replace = s => s.replace(/\{\{name\}\}/g,b.name).replace(/\{\{type\}\}/g,b.type).replace(/\{\{date\}\}/g,formatDate(b.date)).replace(/\{\{ref\}\}/g,b.ref||b.id);
+  const cfg = window.EMAILJS_CONFIG||{};
+  try{
+    if(window.emailjs && cfg.serviceId){
+      emailjs.init({publicKey:cfg.publicKey});
+      await emailjs.send(cfg.serviceId,cfg.bookingTemplateId,{
+        to_email:b.email,to_name:b.name,
+        subject:replace(t.subject),ai_message:replace(t.body),
+        booking_ref:b.ref||b.id,student_name:b.name,student_email:b.email,
+        session_type:b.type,session_date:formatDate(b.date),
+        student_note:b.note||'—',booked_at:b.bookedAt||'—',
+        outreach_email:'',outreach_subject:'',track_type:'',top_skills:'',full_answers:'',
+        reply_to:cfg.adminEmail
+      });
+    }
+  }catch(e){ console.error('Rejection email failed:',e); }
+}
+
+// ── ASSESSMENTS TABLE ─────────────────────────────────
+function renderAssessmentsTable(){
+  const tbody = document.getElementById('assessTbody');
+  if(!allAssessments.length){
+    tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="ei">🧠</div><p>No assessments yet.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = allAssessments.map((a,i)=>`
+    <tr>
+      <td><span class="pill ${a.track==='Academic'?'pill-purple':'pill-green'}">${a.track}</span></td>
+      <td><strong>${a.skills?.[0]||'—'}</strong></td>
+      <td>${a.skills?.[1]||'—'}</td>
+      <td>${a.skills?.[2]||'—'}</td>
+      <td class="text-sm text-mut">${a.date||'—'}</td>
+      <td><button class="action-btn view" onclick="viewAssessment(${i})">View</button></td>
+    </tr>`).join('');
+}
+
+function viewAssessment(i){
+  const a = allAssessments[i];
+  if(!a) return;
+  document.getElementById('modalTitle').textContent = '🧠 Assessment Result';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="info-grid">
+      <div class="info-item"><label>Track</label><span>${a.track}</span></div>
+      <div class="info-item"><label>Completed</label><span>${a.date||'—'}</span></div>
+    </div>
+    <div class="ai-brief">
+      <div class="ai-brief-label">🏆 Skill Recommendations</div>
+      ${(a.skills||[]).map((s,j)=>`<p style="margin-bottom:.4rem"><strong>${j+1}.</strong> ${s}</p>`).join('')}
+    </div>
+    ${a.answers?`<div class="outreach-box"><div class="outreach-label">📝 Full Answers</div><pre>${esc(a.answers)}</pre></div>`:''}`;
+  document.getElementById('modalFooter').innerHTML = `<button class="btn btn-outline btn-sm" onclick="closeModal('bookingModal')">Close</button>`;
+  openModal('bookingModal');
+}
+
+// ── TEMPLATES PAGE ────────────────────────────────────
+function renderTemplates(){
+  const grid = document.getElementById('templatesGrid');
+  const templates = [
+    {key:'approval',  icon:'✅', title:'Session Approval',         desc:'Sent when a booking is approved. Confirms date, ref, and what the student should prepare.',    tags:['Automated','On Approval','Professional']},
+    {key:'rejection', icon:'❌', title:'Session Rejection',         desc:'Politely informs the student their slot is unavailable and offers alternative options.',       tags:['Manual','Compassionate','Alternatives']},
+    {key:'reminder',  icon:'🔔', title:'Session Reminder',          desc:'Sent 24 hours before the session. Includes a preparation checklist for the student.',        tags:['24hr Before','Checklist','Automated']},
+    {key:'reschedule',icon:'🗓', title:'Reschedule Request',         desc:'Used when the counsellor needs to move a session. Apologetic and offers alternative dates.', tags:['Manual','Flexible','Professional']},
+    {key:'followup',  icon:'🔄', title:'Post-Session Follow-up',    desc:'Sent after the session with a summary, action items, and next steps for the student.',       tags:['After Session','Action Items','Encouragement']},
+    {key:'roadmap',   icon:'🗺', title:'Learning Roadmap Delivery', desc:'Delivers the student\'s personalised 6-month learning roadmap with resources and milestones.',tags:['Milestone','Personalised','Resources']},
+    {key:'custom',    icon:'✏️', title:'Custom Message',            desc:'A blank template for any custom communication to a student from the PathFinder team.',        tags:['Flexible','Manual','Any Purpose']}
+  ];
+  grid.innerHTML = templates.map(t=>`
+    <div class="tmpl-card">
+      <div class="tmpl-card-header">
+        <span class="tmpl-icon">${t.icon}</span>
+        <div><h3>${t.title}</h3><p>${t.desc.slice(0,60)}…</p></div>
+      </div>
+      <div class="tmpl-card-body">
+        <div class="tmpl-preview">${EMAIL_TEMPLATES[t.key]?.body?.replace(/\n/g,'<br>')||''}</div>
+        <div class="tmpl-tags">${t.tags.map(tg=>`<span class="tmpl-tag">${tg}</span>`).join('')}</div>
+      </div>
+      <div class="tmpl-card-footer">
+        <button class="btn btn-outline btn-sm" onclick="previewTemplate('${t.key}')">👁 Preview</button>
+        <button class="btn btn-primary btn-sm" onclick="useTemplate('${t.key}')">Use Template</button>
+      </div>
+    </div>`).join('');
+}
+
+function previewTemplate(key){
+  const t = EMAIL_TEMPLATES[key];
+  if(!t) return;
+  document.getElementById('modalTitle').textContent = '👁 Template Preview — ' + key.charAt(0).toUpperCase()+key.slice(1);
+  document.getElementById('modalBody').innerHTML = `
+    <div class="fg"><label>Subject Line</label><input readonly value="${esc(t.subject)}" style="font-family:var(--fm);font-size:.82rem"></div>
+    <div class="ai-brief"><div class="ai-brief-label">📧 Email Body Preview</div><p>${esc(t.body).replace(/\n/g,'<br>')}</p></div>
+    <p class="text-sm text-mut" style="margin-top:.8rem">Template variables: <code style="font-family:var(--fm);color:var(--g4)">{{name}} {{type}} {{date}} {{ref}} {{email}}</code> — filled automatically when sent.</p>`;
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="btn btn-outline btn-sm" onclick="closeModal('bookingModal')">Close</button>
+    <button class="btn btn-primary btn-sm" onclick="useTemplate('${key}');closeModal('bookingModal')">Use This Template</button>`;
+  openModal('bookingModal');
+}
+
+function useTemplate(key){
+  showPage('bookings');
+  toast('Select a booking, then click 📧 Email to use this template','');
+}
+
+// ── ANALYTICS ────────────────────────────────────────
+function renderAnalytics(){
+  // Session type bar chart
+  const typeCount = {};
+  allBookings.forEach(b=>{ typeCount[b.type]=(typeCount[b.type]||0)+1; });
+  const typeMax = Math.max(...Object.values(typeCount),1);
+  const colors = ['var(--p)','var(--g3)','var(--g2)','var(--g4)','var(--g5)'];
+  document.getElementById('sessionTypeChart').innerHTML =
+    Object.entries(typeCount).sort(([,a],[,b])=>b-a).map(([t,v],i)=>`
+    <div class="bar-row">
+      <span class="bar-label">${t.split(' ').slice(0,2).join(' ')}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/typeMax*100).toFixed(0)}%;background:${colors[i%colors.length]}"></div></div>
+      <span class="bar-val">${v}</span>
+    </div>`).join('') || '<p class="text-mut text-sm">No data yet</p>';
+
+  // Status donut
+  const statuses = {pending:0,approved:0,completed:0,rejected:0};
+  allBookings.forEach(b=>{ if(statuses[b.status]!==undefined) statuses[b.status]++; });
+  const statusColors = {'pending':'#ffd166','approved':'#06d6a0','completed':'#6c63ff','rejected':'#ff6b6b'};
+  const total = allBookings.length||1;
+  const canvas = document.getElementById('donutCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,120,120);
+  let startAngle = -Math.PI/2;
+  Object.entries(statuses).forEach(([s,v])=>{
+    if(!v) return;
+    const slice = (v/total)*(2*Math.PI);
+    ctx.beginPath();
+    ctx.moveTo(60,60);
+    ctx.arc(60,60,50,startAngle,startAngle+slice);
+    ctx.closePath();
+    ctx.fillStyle = statusColors[s];
+    ctx.fill();
+    startAngle += slice;
+  });
+  // donut hole
+  ctx.beginPath();
+  ctx.arc(60,60,28,0,2*Math.PI);
+  ctx.fillStyle='#12122a';
+  ctx.fill();
+  ctx.fillStyle='#eeeeff';
+  ctx.font='bold 14px Syne,sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText(allBookings.length, 60, 60);
+  document.getElementById('donutLegend').innerHTML =
+    Object.entries(statuses).map(([s,v])=>`
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${statusColors[s]}"></div>
+      ${s.charAt(0).toUpperCase()+s.slice(1)}: <strong style="color:var(--txt)">${v}</strong>
+    </div>`).join('');
+
+  // Skills chart
+  const skillCount = {};
+  allAssessments.forEach(a=>(a.skills||[]).forEach(s=>{ const k=s.split(' (')[0]; skillCount[k]=(skillCount[k]||0)+1; }));
+  const skillMax = Math.max(...Object.values(skillCount),1);
+  document.getElementById('skillChart').innerHTML =
+    Object.entries(skillCount).sort(([,a],[,b])=>b-a).slice(0,6).map(([t,v],i)=>`
+    <div class="bar-row">
+      <span class="bar-label">${t.split(' ').slice(0,2).join(' ')}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/skillMax*100).toFixed(0)}%;background:${colors[i%colors.length]}"></div></div>
+      <span class="bar-val">${v}</span>
+    </div>`).join('') || '<p class="text-mut text-sm">Complete assessments to see data</p>';
+
+  // Track chart
+  const trackCount = {};
+  allAssessments.forEach(a=>{ trackCount[a.track]=(trackCount[a.track]||0)+1; });
+  const trackMax = Math.max(...Object.values(trackCount),1);
+  document.getElementById('trackChart').innerHTML =
+    Object.entries(trackCount).map(([t,v],i)=>`
+    <div class="bar-row">
+      <span class="bar-label">${t}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/trackMax*100).toFixed(0)}%;background:${colors[i%colors.length]}"></div></div>
+      <span class="bar-val">${v}</span>
+    </div>`).join('') || '<p class="text-mut text-sm">No assessment data yet</p>';
+}
+
+// ── ACTIVITY FEED ─────────────────────────────────────
+function addActivity(title, sub, type='blue'){
+  const icons = {blue:'📋',green:'✅',yellow:'⚠️',red:'❌'};
+  const feed = document.getElementById('activityFeed');
+  const item = document.createElement('div');
+  item.className = 'act-item';
+  item.innerHTML = `
+    <div class="act-icon act-${type}">${icons[type]||'📋'}</div>
+    <div class="act-content"><strong>${esc(title)}</strong><span>${esc(sub)}</span></div>
+    <span class="act-time">${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>`;
+  feed.insertBefore(item, feed.firstChild);
+  // Keep max 8 items
+  while(feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+
+// ── EXPORT ────────────────────────────────────────────
+function exportCSV(){
+  if(!allBookings.length){ toast('No bookings to export','err'); return; }
+  const headers = ['Ref','Name','Email','Session Type','Date','Status','Booked At','Note'];
+  const rows = allBookings.map(b=>[b.ref||b.id,b.name,b.email,b.type,b.date,b.status,b.bookedAt||'',b.note||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','),...rows].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`pathfinder-bookings-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('✅ CSV exported','ok');
+}
+
+function exportAssessJSON(){
+  if(!allAssessments.length){ toast('No assessments to export','err'); return; }
+  const blob = new Blob([JSON.stringify(allAssessments,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`pathfinder-assessments-${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('✅ Assessments JSON exported','ok');
+}
+
+function clearAllData(){
+  if(!confirm('Are you sure? This will permanently delete ALL bookings and assessments from this browser.')) return;
+  allBookings=[]; allAssessments=[];
+  localStorage.removeItem(LS_BOOKINGS);
+  localStorage.removeItem(LS_ASSESSMENTS);
+  updateStats(); renderDashboard();
+  toast('All data cleared','err');
+}
+
+// ── MODAL HELPERS ─────────────────────────────────────
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); }));
+// Escape key
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
+
+// ── TOAST ─────────────────────────────────────────────
+let tTimer;
+function toast(msg,type='',dur=3800){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast up'+(type?' toast-'+type:'');
+  clearTimeout(tTimer); tTimer=setTimeout(()=>t.classList.remove('up'),dur);
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function formatDate(d){
+  if(!d) return '—';
+  try{ return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+  catch(e){ return d; }
+}
+function statusBadge(s){
+  const map = {pending:'sb-pending ⏳',approved:'sb-approved ✅',completed:'sb-completed 🎓',rejected:'sb-rejected ❌'};
+  const cls = map[s]||'sb-pending';
+  return `<span class="status-badge ${cls.split(' ')[0]}"><span class="sb-dot"></span>${s?.charAt(0).toUpperCase()+s?.slice(1)||'Pending'}</span>`;
+}
+
+// Expose functions for main site to push new bookings/assessments
+window.PFAdmin = {
+  addBooking(booking){ allBookings.unshift(booking); saveBookings(); updateStats(); },
+  addAssessment(assess){ allAssessments.unshift(assess); saveAssessments(); updateStats(); }
+};
+</script>
+</body>
+</html>
